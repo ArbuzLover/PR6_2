@@ -1,0 +1,19 @@
+﻿<Window x:Class="PR6_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PR6_2"
+        mc:Ignorable="d"
+        Title="Практическая работа 6.2 Анисимов и Кошелева" Height="450" Width="800"
+        Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Вернуться назад" x:Name="BackButton" Click="BackButton_OnClick" Width="100" Height="20" HorizontalAlignment="Left" ToolTip="Нажмите"/>
+
+        <Frame Source="Pages/MainPage.xaml"  NavigationUIVisibility="Hidden" Navigated="MainFrame_OnNavigated" Grid.Row="1" x:Name="MainFrame"></Frame>
+    </Grid>
+</Window>

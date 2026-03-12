@@ -1,0 +1,120 @@
+﻿<Page x:Class="PR6_2.Pages.Page3"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PR6_2.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Page3" Background="#FFB3C5D9">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Изображение с формулой -->
+        <Image Grid.Row="0" Grid.ColumnSpan="2" 
+               HorizontalAlignment="Center" 
+               Source="/Images/Zadan3.png"  
+               Width="400" 
+               ToolTip="Формула" 
+               Margin="0,0,0,0"/>
+
+        <!-- Панель ввода параметров -->
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+            <TextBlock Text="X"/>
+            <TextBox x:Name="X"  
+                     PreviewTextInput="TextBox_OnPreviewTextInput" 
+                     ToolTip="Введите значение" 
+                     Width="50" Height="20"/>
+
+            <TextBlock Text="Xk" Margin="20,0,0,0"/>
+            <TextBox x:Name="Xk"  
+                     PreviewTextInput="TextBox_OnPreviewTextInput" 
+                     ToolTip="Введите значение" 
+                     Width="50" Height="20"/>
+
+            <TextBlock Text="dX" Margin="20,0,0,0"/>
+            <TextBox x:Name="dX"  
+                     PreviewTextInput="TextBox_OnPreviewTextInput" 
+                     ToolTip="Введите значение" 
+                     Width="50" Height="20"/>
+        </StackPanel>
+
+        <!-- Кнопки управления -->
+        <Button Grid.Row="2" Grid.Column="0" 
+                Content="Вычислить"    
+                Click="Button_Click" 
+                ToolTip="Нажмите" 
+                Width="100" 
+                Height="20" 
+                Margin="300,0,0,0"/>
+
+        <Button Grid.Row="2" Grid.Column="1" 
+                Content="Очистить"    
+                Click="Button_Clear" 
+                ToolTip="Нажмите" 
+                Width="100" 
+                HorizontalAlignment="Left"/>
+
+        <!-- Поле для ответа -->
+        <StackPanel Grid.Row="3" HorizontalAlignment="Right" Orientation="Horizontal" >
+            <TextBlock   
+                   Text="Ответ:" 
+                   VerticalAlignment="Top"  
+                   HorizontalAlignment="Right" 
+                   Margin="0,5,0,0"/>
+
+        <TextBox 
+                 x:Name="Answer"   
+                  
+                 ToolTip="Результат вычислений" 
+                 Width="300" 
+                  
+                 />
+        </StackPanel>
+        <!-- График функции -->
+        <StackPanel Grid.Row="3"  Grid.Column="1" Margin="10">
+            <TextBlock Text="График функции:" 
+                       FontSize="14" 
+                       FontWeight="Bold" 
+                       Margin="0,0,0,5"/>
+
+            <Border BorderBrush="Black" 
+                    BorderThickness="1" 
+                    Background="White"
+                    HorizontalAlignment="Center">
+                <Canvas x:Name="GraphCanvas" 
+                        Width="500" 
+                        Height="300" 
+                        Background="White"
+                        ClipToBounds="True">
+                    <!-- Здесь будут рисоваться оси и график программно -->
+                </Canvas>
+            </Border>
+
+            <!-- Панель информации о графике -->
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,5,0,0">
+                <TextBlock x:Name="RangeInfo" 
+                           Text="Диапазон: " 
+                           FontSize="11" 
+                           Foreground="Gray"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
