@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace PR6_2.Pages
 {
@@ -25,49 +15,73 @@ namespace PR6_2.Pages
         {
             InitializeComponent();
         }
-        
+
+        /// <summary>
+        /// Вычисляет значение функции по формуле
+        /// </summary>
+        public bool Calculate(double x, double y, double z)
+        {
+            if (!Page1Calculator.TryCalculate(x, y, z, out double result))
+            {
+                MessageBox.Show("Некорректные входные данные (деление на ноль или отрицательное подкоренное выражение)");
+                return false;
+            }
+
+            Answer.Text = result.ToString("F6");
+            LastResult = result;
+            return true;
+        }
+
+        /// <summary>
+        /// Обработчик нажатия кнопки «Вычислить»
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Calculate(X.Text, Y.Text, Z.Text);
-        }
-
-        public bool Calculate(string X, string Y, string Z)
-        {
-            if (X.Length > 0 & Y.Length > 0 & Z.Length > 0)
+            if (string.IsNullOrWhiteSpace(X.Text) ||
+                string.IsNullOrWhiteSpace(Y.Text) ||
+                string.IsNullOrWhiteSpace(Z.Text))
             {
-                double x = Convert.ToDouble(X);
-                double y = Convert.ToDouble(Y);
-                double z = Convert.ToDouble(Z);
-
-
-
-                Answer.Text = $"{Math.Pow(2, -x) * Math.Sqrt(x + Math.Pow(Math.Abs(y), 1.0 / 4.0) * Math.Pow(Math.Exp(x - 1) / Math.Sin(z), 1.0 / 3.0))}";
-                return true;
+                MessageBox.Show("Заполните все поля");
+                return;
             }
-            else { MessageBox.Show("Введите все значения"); return false; }
-           
-           
+
+            if (double.TryParse(X.Text.Replace('.', ','), out double x) &&
+                double.TryParse(Y.Text.Replace('.', ','), out double y) &&
+                double.TryParse(Z.Text.Replace('.', ','), out double z))
+            {
+                Calculate(x, y, z);
+            }
+            else
+            {
+                MessageBox.Show("Введены некорректные числа");
+            }
         }
 
+        /// <summary>
+        /// Обработчик нажатия кнопки «Очистить»
+        /// </summary>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            X.Text = "";
-            Y.Text = "";
-            Z.Text = "";
-            Answer.Text = "";
+            X.Clear();
+            Y.Clear();
+            Z.Clear();
+            Answer.Clear();
         }
-        
 
-
+        /// <summary>
+        /// Проверка ввода чисел с плавающей точкой
+        /// </summary>
         private void TextBox_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var textBox = sender as System.Windows.Controls.TextBox;
+            var textBox = sender as TextBox;
             string newText = textBox.Text.Insert(textBox.CaretIndex, e.Text);
-
-            // Регулярное выражение для проверки double числа
-            // Разрешает: цифры, один минус в начале, одну точку
             Regex regex = new Regex(@"^-?\d*\.?\d*$");
             e.Handled = !regex.IsMatch(newText);
         }
+
+        /// <summary>
+        /// Последний вычисленный результат. Используется для тестирования.
+        /// </summary>
+        public double LastResult { get; private set; }
     }
 }

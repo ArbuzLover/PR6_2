@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace PR6_2.Pages
 {
@@ -26,83 +16,87 @@ namespace PR6_2.Pages
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Вычисляет значение функции по формуле
+        /// </summary>
+        public bool Calculate(double fx, double m, double x)
+        {
+            if (!Page2Calculator.TryCalculate(fx, m, x, out double result))
+            {
+                MessageBox.Show("Некорректные входные данные (аргумент логарифма должен быть положительным)");
+                return false;
+            }
+
+            Answer.Text = result.ToString("F6");
+            LastResult = result;
+            return true;
+        }
+
+        /// <summary>
+        /// Обработчик нажатия кнопки «Вычислить»
+        /// </summary>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // Получаем значение f(x) в зависимости от выбранной функции
             double fx;
+
+            if (!double.TryParse(x.Text.Replace('.', ','), out double xValue))
+            {
+                MessageBox.Show("Введите корректное значение x");
+                return;
+            }
+
             if (ShFunctionRadio.IsChecked == true)
             {
-                fx = Math.Sinh(Convert.ToDouble(x.Text));
+                fx = Math.Sinh(xValue);
             }
             else if (SquareFunctionRadio.IsChecked == true)
             {
-                fx = Convert.ToDouble(x.Text) * Convert.ToDouble(x.Text);
+                fx = xValue * xValue;
             }
-            else // ExpFunctionRadio
+            else if (ExpFunctionRadio.IsChecked == true)
             {
-                fx = Math.Exp(Convert.ToDouble(x.Text));
+                fx = Math.Exp(xValue);
+            }
+            else
+            {
+                MessageBox.Show("Выберите функцию f(x)");
+                return;
             }
 
-            // Вычисление основной функции согласно варианту 8
-            double result = CalculateMainFunction(fx, Convert.ToDouble(m.Text), Convert.ToDouble(x.Text));
+            if (!double.TryParse(m.Text.Replace('.', ','), out double mValue))
+            {
+                MessageBox.Show("Введите корректное значение m");
+                return;
+            }
 
-            Answer.Text = $"{result}";
+            Calculate(fx, mValue, xValue);
         }
 
+        /// <summary>
+        /// Обработчик нажатия кнопки «Очистить»
+        /// </summary>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            x.Text = "";
-            m.Text = "";
-            Answer.Text = "";
+            x.Clear();
+            m.Clear();
+            Answer.Clear();
         }
 
+        /// <summary>
+        /// Проверка ввода чисел с плавающей точкой
+        /// </summary>
         private void TextBox_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            var textBox = sender as System.Windows.Controls.TextBox;
+            var textBox = sender as TextBox;
             string newText = textBox.Text.Insert(textBox.CaretIndex, e.Text);
-
-            // Регулярное выражение для проверки double числа
-            // Разрешает: цифры, один минус в начале, одну точку
             Regex regex = new Regex(@"^-?\d*\.?\d*$");
             e.Handled = !regex.IsMatch(newText);
         }
 
-
-        private double CalculateMainFunction(double fx, double m, double x)
-        {
-            double xq = Math.Abs(x * m);
-
-            // Константа для сравнения с плавающей точкой
-            const double epsilon = 1e-10;
-
-            // Проверяем условие |xq| > 10
-            if (xq > 10 + epsilon)
-            {
-                // ln(|f(x)| + |q|)
-                // Проверяем, что аргумент логарифма положительный
-                double argument = Math.Abs(fx) + Math.Abs(m);
-                if (argument <= 0)
-                {
-                    throw new ArgumentException("Аргумент логарифма должен быть положительным");
-                }
-                return Math.Log(argument);
-            }
-
-            // Проверяем условие |xq| < 10
-            if (xq < 10 - epsilon)
-            {
-                // e^(f(x) + q)
-                return Math.Exp(fx + m);
-            }
-
-            // Условие |xq| = 10 (с учетом погрешности)
-            if (Math.Abs(xq - 10) <= epsilon)
-            {
-                // f(x) + q
-                return fx + m;
-            }
-
-            // Если ни одно условие не выполнилось (маловероятно)
-            throw new InvalidOperationException("Не удалось определить условие для вычисления функции");
-        }
+        /// <summary>
+        /// Последний вычисленный результат. Используется для тестирования.
+        /// </summary>
+        public double LastResult { get; private set; }
     }
 }
